@@ -47,7 +47,7 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        if(!personService.update(person)) {
+        if (!personService.update(person)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update not found");
         }
         return ResponseEntity.ok().build();
@@ -57,7 +57,7 @@ public class PersonController {
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         Person person = new Person();
         person.setId(id);
-        if(!personService.delete(person)) {
+        if (!personService.delete(person)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for delete not found");
         }
         return ResponseEntity.ok().build();
