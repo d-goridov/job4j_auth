@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.service.PersonService;
 
@@ -46,7 +47,9 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        personService.update(person);
+        if(!personService.update(person)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update not found");
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -54,7 +57,9 @@ public class PersonController {
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         Person person = new Person();
         person.setId(id);
-        personService.delete(person);
+        if(!personService.delete(person)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for delete not found");
+        }
         return ResponseEntity.ok().build();
     }
 }
