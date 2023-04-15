@@ -47,19 +47,13 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        if (!personService.update(person)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update not found");
-        }
-        return ResponseEntity.ok().build();
+        return personService.update(person) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         Person person = new Person();
         person.setId(id);
-        if (!personService.delete(person)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for delete not found");
-        }
-        return ResponseEntity.ok().build();
+        return personService.delete(person) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }
