@@ -74,6 +74,19 @@ public class PersonController {
         return personService.delete(person) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
+    @PatchMapping("/")
+    public Person updatePassword(@RequestBody Person person) {
+
+        if (personService.findByLogin(person.getLogin()).isEmpty()) {
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person is not exist. Check input login data");
+        }
+
+        if (!personService.update(person)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update is not exists");
+        }
+        return person;
+    }
+
     @ExceptionHandler(value = { IllegalArgumentException.class })
     public void exceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());

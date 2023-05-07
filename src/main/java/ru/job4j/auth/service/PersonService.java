@@ -11,5 +11,5 @@ public interface PersonService {
     Person create(Person person);
     boolean delete(Person person);
     boolean update(Person person);
-
+    Optional<Person> findByLogin(String login);
 }

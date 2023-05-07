@@ -53,4 +53,9 @@ public class PersonServiceImpl implements PersonService {
         personRepository.save(person);
         return true;
     }
+
+    @Override
+    public Optional<Person> findByLogin(String login) {
+        return personRepository.findByLogin(login);
+    }
 }
