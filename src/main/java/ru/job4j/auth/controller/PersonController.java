@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.PersonDTO;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,12 +76,10 @@ public class PersonController {
     }
 
     @PatchMapping("/")
-    public Person updatePassword(@RequestBody Person person) {
-
-        if (personService.findByLogin(person.getLogin()).isEmpty()) {
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person is not exist. Check input login data");
-        }
-
+    public Person updatePassword(@RequestBody PersonDTO personDTO) {
+        Person person = personService.findByLogin(personDTO.getLogin()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Person is not exist. Check input login data"));
+        person.setPassword(personDTO.getPassword());
         if (!personService.update(person)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update is not exists");
         }
