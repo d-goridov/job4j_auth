@@ -11,10 +11,7 @@ import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.dto.PersonDTO;
 import ru.job4j.auth.service.PersonService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,15 +35,7 @@ public class PersonController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        String login = person.getLogin();
-        String password = person.getPassword();
-        if (login == null || password == null) {
-            throw new NullPointerException("Login and password mustn't be empty");
-        }
-        if (password.length() < 6) {
-            throw new IllegalArgumentException("Invalid password. Password length must be more than 5 characters.");
-        }
+    public ResponseEntity<Person> create(@Valid @RequestBody Person person) {
         return new ResponseEntity<>(
                 personService.create(person),
                 HttpStatus.CREATED
@@ -84,16 +73,5 @@ public class PersonController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person for update is not exists");
         }
         return person;
-    }
-
-    @ExceptionHandler(value = { IllegalArgumentException.class })
-    public void exceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", e.getMessage());
-            put("type", e.getClass());
-        }}));
-        LOGGER.error(e.getLocalizedMessage());
     }
 }
